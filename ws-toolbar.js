@@ -277,6 +277,28 @@ function mytoolbar_cb(text) {
 	return res;
 }
 
+function mytoolbar_ib(text) {
+	var prependCr = false;
+	var appendCr = false;
+	if (text.startsWith('\n'))
+	{
+		text = text.substring(1);
+		prependCr = true;
+	}
+	if (text.endsWith('\n'))
+	{
+		text = text.substring(0, text.length - 1);
+		appendCr = true;
+	}
+    res = "{{italic block|" + text + "}}";
+	if (prependCr)
+		res = "\n" + res;
+	if (appendCr)
+		res += "\n";
+
+	return res;
+}
+
 function mytoolbar_sc(text) {
 	var addSpace = false;
 	if (text.endsWith(' '))
@@ -455,6 +477,7 @@ $(document).ready(function() {
     add_button('mytoolbar_ppoem', '{{ppoem|}}', doSelOrAll(mytoolbar_ppoem));
     add_button('mytoolbar_c', 'c', doSel(mytoolbar_c));
     add_button('mytoolbar_cb', 'cb', doSelOrAll(mytoolbar_cb));
+    add_button('mytoolbar_ib', 'cb', doSelOrAll(mytoolbar_ib));
     add_button('mytoolbar_sc', 'sc', doSel(mytoolbar_sc));
     add_button('mytoolbar_cbs', 'cb/s', doSelOrAll(mytoolbar_cbs));
     add_button('mytoolbar_cbs_tb', 'cb/s↕', mytoolbar_cbs_tb);
