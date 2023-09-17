@@ -8,12 +8,13 @@ function doSel(func)
     return () => {
         var textbox = document.getElementById('wpTextbox1');
         var selStart = textbox.selectionStart;
-        var text = textbox.value.substring(selStart, textbox.selectionEnd);
+        var selEnd = textbox.selectionEnd;
+        var text = textbox.value.substring(selStart, selEnd);
         console.log(text);
         if (!text.length)
             return;
 
-        var res = func(text);
+        var res = func(text, selStart, selEnd, text.length);
 
         textbox.focus();
         textbox.value = textbox.value.substring(0, selStart)
@@ -28,12 +29,13 @@ function doSelOrAll(func)
     return () => {
         var textbox = document.getElementById('wpTextbox1');
         var selStart = textbox.selectionStart;
+        var selEnd = textbox.selectionEnd;
         var text = textbox.value;
         if (textbox.selectionStart != textbox.selectionEnd)
             text = text.substring(selStart, textbox.selectionEnd);
         console.log(text);
 
-        var res = func(text);
+        var res = func(text, selStart, selEnd, text.length);
 
         if (textbox.selectionStart != textbox.selectionEnd) {
             textbox.focus();
@@ -240,7 +242,7 @@ function mytoolbar_poem(ppoem)
     return function(text)
     {
         var res = text;
-        var add_n = false;
+        var addN = false;
         if (!res.startsWith("\n"))
             res = "\n" + res;
         if (res.endsWith("\n"))
@@ -253,7 +255,7 @@ function mytoolbar_poem(ppoem)
         else
             res = "<poem>" + res + "</poem>";
 
-        if (add_n)
+        if (addN)
             res = res + "\n";
 
         return res;
