@@ -70,19 +70,19 @@ function doInsert(func)
 
 function simpleTag(tag)
 {
-	return function(text)
-	{
-	    var addSpace = false;
-	    if (text.endsWith(' '))
-	    {
-	        addSpace = true;
-	        text = text.substring(0, text.length - 1);
-	    }
-	    res = '{{' + tag + '|' + text + '}}';
-	    if (addSpace)
-	        res += ' ';
-	    return res;
-	}
+    return function(text)
+    {
+        var addSpace = false;
+        if (text.endsWith(' '))
+        {
+            addSpace = true;
+            text = text.substring(0, text.length - 1);
+        }
+        res = '{{' + tag + '|' + text + '}}';
+        if (addSpace)
+            res += ' ';
+        return res;
+    }
 }
 
 function fixHyphens(poem) {
@@ -287,6 +287,29 @@ function mytoolbar_block(type)
     };
 }
 
+function mytoolbar_lp(text)
+{
+    var addSpace = false;
+    if (text.endsWith(' '))
+    {
+        addSpace = true;
+        text = text.substring(0, text.length - 1);
+    }
+    res = '{{lp||';
+    if (text.length > 1)
+    {
+        res += text.substring(0, text.length - 1) + "|" + text.substring(text.length - 1);
+    }
+    else
+    {
+        res += text;
+    }
+    res += "}}";
+    if (addSpace)
+        res += ' ';
+    return res;
+}
+
 function mytoolbar_cbs(text) {
     var prependCr = false;
     var appendCr = false;
@@ -396,7 +419,11 @@ function mytoolbar_overfloat_left(text)
 
 function mytoolbar_paragraphs(text)
 {
-    return text.replace(/\n+$/g, '').split("\n\n").map((paragraph) =>
+    const append = text.match(/\n+$/g);
+    if (append)
+        text = text.substring(0, text.length - append[0].length);
+
+    var res = text.split("\n\n").map((paragraph) =>
     {
         var result = "";
         paragraph.split("\n").forEach((line, i, lines) => {
@@ -417,6 +444,11 @@ function mytoolbar_paragraphs(text)
         });
         return result;
     }).join("\n\n");
+
+    if (append)
+        res += append[0];
+
+    return res;
 }
 
 function add_button(id, name, callback)
@@ -448,6 +480,7 @@ $(document).ready(function() {
     add_button('mytoolbar_cb', 'cb', doSelOrAll(mytoolbar_block('center')));
     add_button('mytoolbar_ib', 'ib', doSelOrAll(mytoolbar_block('italic')));
     add_button('mytoolbar_sc', 'sc', doSel(simpleTag('sc')));
+    add_button('mytoolbar_lp', 'lp', doSel(mytoolbar_lp));
     add_button('mytoolbar_cbs', 'cb/s', doSelOrAll(mytoolbar_cbs));
     add_button('mytoolbar_cbs_tb', 'cb/s↕', mytoolbar_cbs_tb);
     add_button('mytoolbar_cbs_b', 'cb/s↓', mytoolbar_cbs_b);
