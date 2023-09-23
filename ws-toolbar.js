@@ -1,5 +1,4 @@
 /*
-
 (\.[^\r\n\s\"\']|[\,][^\s"']|[\;\:][^\s]|\b[Ss]ec\b|\b[Aa]rc\b|\b[Bb]om\b|\b[Cc]omers?|\. [a-z]|\b1\b|[a-zA-z]\d|\d[a-zA-Z]|\b[Bb]um|[\^\@«»\*£]+|\bdien?\b|—\-|\-—|[.,!? \r\n]\-|\-[.,!? \r\n]|\btiling|(^|\s)['"]($|\s)|\b[Tt]ire\b)
 */
 
@@ -459,6 +458,16 @@ function add_button(id, name, callback)
 
 $(document).ready(function() {
     var page_heading = $('#firstHeading').text();
+
+    var tid = setInterval(() => {
+        var $textbox = $("#wpSummary");
+        if ($textbox.length && page_heading.startsWith('Creating') &&
+        	!page_heading.startsWith('Creating Page:') && $textbox.val() == '') {
+            $textbox.val('create page');
+            clearInterval(tid);
+        }
+    }, 500);
+
     if (!page_heading.startsWith('Editing Page:') && !page_heading.startsWith('Creating Page:'))
         return;
 
@@ -492,24 +501,24 @@ $(document).ready(function() {
     add_button('mytoolbar_ofl', 'ofl', doSel(mytoolbar_overfloat_left));
     add_button('mytoolbar_paragraphs', '⇄', doSelOrAll(mytoolbar_paragraphs));
 
-    var tid = setInterval(() => {
+    var tid2 = setInterval(() => {
         var $label = $("label[for='wpTextbox1']");
         if ($label.length) {
             var $toolbar = $('.MyCustomToolbar');
             $toolbar.detach();
             $label.append($toolbar);
-            clearInterval(tid);
+            clearInterval(tid2);
         }
     }, 500);
 
-    var tid2 = setInterval(() => {
+    var tid3 = setInterval(() => {
         var $label = $("label[for='wpFooterTextbox']");
         if ($label.length) {
             var textbox = document.getElementById('wpFooterTextbox');
             var text = textbox.value;
             if (text.length && !text.startsWith('\n'))
                 textbox.value = '\n' + text;
-            clearInterval(tid2);
+            clearInterval(tid3);
         }
     }, 500);
 });
