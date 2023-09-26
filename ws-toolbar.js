@@ -261,6 +261,21 @@ function mytoolbar_poem(ppoem)
     };
 }
 
+function mytoolbar_ppoem_join(side, type)
+{
+	return function(text)
+	{
+		const re = /\{\{ppoem\|(start=[a-z\-]+\|)?/;
+		const m = text.match(re);
+		if (!m)
+			return mytoolbar_ppoem_join(side, type)(mytoolbar_poem(true)(text));
+
+		const pos = m.index + m[0].length;
+
+		return text.substring(0, pos) + side + "=" + type + "|" + text.substring(pos);
+	}
+}
+
 function mytoolbar_block(type)
 {
     return function(text) {
@@ -450,9 +465,9 @@ function mytoolbar_paragraphs(text)
     return res;
 }
 
-function add_button(id, name, callback)
+function add_button(id, name, callback, title)
 {
-    $('.MyCustomToolbar').append('<input id="' + id + '" type="button" class="oo-ui-buttonElement-button" value="' + name +'" />');
+    $('.MyCustomToolbar').append('<input id="' + id + '" type="button" class="oo-ui-buttonElement-button" value="' + name + '" ' + (title ? 'title="' + title + '" ' : '') + '/>');
     $('#' + id).click(callback);
 }
 
@@ -500,6 +515,12 @@ $(document).ready(function() {
     add_button('mytoolbar_n', 'n', doSel(simpleTag('n')));
     add_button('mytoolbar_ofl', 'ofl', doSel(mytoolbar_overfloat_left));
     add_button('mytoolbar_paragraphs', '⇄', doSelOrAll(mytoolbar_paragraphs));
+    add_button('mytoolbar_start_follow', '< fw', doSelOrAll(mytoolbar_ppoem_join('start', 'follow')), 'ppoem|start=follow');
+    add_button('mytoolbar_end_follow', 'fw >', doSelOrAll(mytoolbar_ppoem_join('end', 'follow')), 'ppoem|end=follow');
+    add_button('mytoolbar_start_stanza', '< st', doSelOrAll(mytoolbar_ppoem_join('start', 'stanza')), 'ppoem|start=stanza');
+    add_button('mytoolbar_end_stanza', 'st >', doSelOrAll(mytoolbar_ppoem_join('end', 'stanza')), 'ppoem|end=stanza');
+    add_button('mytoolbar_start_sameline', '< sl', doSelOrAll(mytoolbar_ppoem_join('start', 'same-line')), 'ppoem|start=same-line');
+    add_button('mytoolbar_end_sameline', 'sl >', doSelOrAll(mytoolbar_ppoem_join('end', 'same-line')), 'ppoem|end=same-line');
 
     var tid2 = setInterval(() => {
         var $label = $("label[for='wpTextbox1']");
